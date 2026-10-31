@@ -1,0 +1,104 @@
+usage: |
+  DeepSeek Harness (dsh) 是 DeepSeek 开源的 AI Agent 开发与运行框架，内置 Web UI，一切皆插件。
+
+  首次使用：
+  1. 打开应用后进入 Web UI（已内置免登录，无需手动输入 token）
+  2. 在 Settings → Models 中填入 DeepSeek API Key（或其他兼容模型的 Key）并保存
+  3. 选择工作目录后即可与 Agent 对话、执行任务
+
+  内置插件市场：
+  - 已预装 dshmarket 插件市场，进入 Settings → Plugin Market 即可浏览和安装插件
+  - 插件市场缩略图通过应用内代理加载，无需额外网络配置
+
+  说明：
+  - Agent 写的文件默认落在「网盘 → 应用文稿 → DeepSeek Harness → default-workspace」，与手机/电脑端文件管理器互通
+  - 工作区文件、会话与模型设置都保存在可持久化的位置，重启、升级、重装都不会丢失
+  - 首次打开无需手动建工作区，会自动创建默认工作区
+  - 若应用刚安装时网盘文稿还没挂载，会先等待挂载再启动，不会把工作区写到临时位置
+  - 模型 Key 在应用内配置
+application:
+  subdomain: dsh
+  public_path:
+    - /manifest.webmanifest
+    - /dsh-img/
+  upstreams:
+    - location: /
+      backend: http://dsh.f00700f.deepseek-harness.lzcapp:3080
+      disable_trim_location: true
+      fix_websocket_header: true
+  injects:
+    - id: lazycat-file-bridge
+      'on': request
+      when:
+        - /__lazycat_file_bridge/*
+      do:
+        - src: |
+            const bridgePrefix = "/__lazycat_file_bridge";
+            const requestHost = String(ctx.request.host || "")
+              .split(":")[0]
+              .toLowerCase();
+            const firstDot = requestHost.indexOf(".");
+            const method = String(ctx.request.method || "").toUpperCase();
+
+            if (
+              firstDot <= 0 ||
+              !requestHost.endsWith(".heiyu.space") ||
+              !["GET", "HEAD", "PUT"].includes(method)
+            ) {
+              ctx.response.send(
+                ["GET", "HEAD", "PUT"].includes(method) ? 400 : 405,
+                "Invalid LazyCat file bridge request",
+              );
+              return;
+            }
+
+            const boxDomain = requestHost.slice(firstDot + 1);
+            const fileOrigin = "https://file." + boxDomain;
+            const targetPath =
+              "/files/home" + ctx.request.path.slice(bridgePrefix.length);
+
+            ctx.headers.del("Origin");
+            ctx.headers.del("Referer");
+            ctx.proxy.to(fileOrigin, {
+              path: targetPath,
+              query: ctx.request.raw_query,
+              use_target_host: true,
+              timeout_ms: 120000,
+              on_fail: "error",
+            });
+    - id: open-save-chooser
+      'on': browser
+      when:
+        - /*
+      do:
+        - src: >-
+            file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
+          params:
+            diskRoot: /_lzc/files/home
+            fileBridgeRoot: /__lazycat_file_bridge
+            fallbackMime: application/octet-stream
+            locale: auto
+            hooks:
+              fileSystemAccess: true
+              fileInput: true
+              downloadAnchor: true
+services:
+  dsh:
+    image: >-
+      registry.lazycat.cloud/wans/dsh-runtime-0-2-1-rc5:208bb5c2f7d1c86b
+    binds:
+      - /lzcapp/var/data:/data
+      - /lzcapp/var/data/home:/root
+    environment:
+      - DSH_HOME=/data
+    entrypoint: /bin/sh /lzcapp/pkg/content/entry.sh
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          node -e
+          "require('http').get('http://127.0.0.1:3080/',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+      interval: 15s
+      timeout: 10s
+      retries: 8
+      start_period: 180s

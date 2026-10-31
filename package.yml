@@ -1,0 +1,59 @@
+package: f00700f.deepseek-harness
+version: 1.1.18
+name: DeepSeek Harness
+description: Everything is a Plugin. DeepSeek 开源的 AI Agent 开发与运行框架（dsh），内置 Web UI，一切皆插件。
+author: DeepSeek AI
+license: MIT
+homepage: https://github.com/deepseek-ai/deepseek-harness
+locales:
+  zh-CN:
+    name: DeepSeek Harness
+    description: DeepSeek 开源的 AI Agent 开发与运行框架（dsh），基于 Cordis 插件架构，内置 Web UI，一切皆插件。
+    usage: |
+      DeepSeek Harness (dsh) 是 DeepSeek 开源的 AI Agent 开发与运行框架，内置 Web UI，一切皆插件。
+
+      首次使用：
+      1. 打开应用后进入 Web UI（已内置免登录，无需手动输入 token）
+      2. 在 Settings → Models 中填入 DeepSeek API Key（或其他兼容模型的 Key）并保存
+      3. 选择工作目录后即可与 Agent 对话、执行任务
+
+      内置插件市场：
+      - 已预装 dshmarket 插件市场，进入 Settings → Plugin Market 即可浏览和安装插件
+      - 插件市场缩略图通过应用内代理加载，无需额外网络配置
+
+      说明：
+      - Agent 写的文件默认落在「网盘 → 应用文稿 → DeepSeek Harness → default-workspace」，与手机/电脑端文件管理器互通
+      - 工作区文件、会话与模型设置都保存在可持久化的位置，重启、升级、重装都不会丢失
+      - 首次打开无需手动建工作区，会自动创建默认工作区
+      - 若应用刚安装时网盘文稿还没挂载，会先等待挂载再启动，不会把工作区写到临时位置
+      - 模型 Key 在应用内配置
+  en-US:
+    name: DeepSeek Harness
+    description: >-
+      DeepSeek Harness (dsh) — an open-source agent harness with
+      everything-is-a-plugin architecture and a built-in Web UI.
+    usage: >-
+      DeepSeek Harness (dsh) is an open-source AI Agent framework with built-in
+      Web UI.
+
+      First steps:
+
+      1. Open the Web UI (automatic sign-in enabled).
+
+      2. In Settings -> Models, enter your DeepSeek API Key.
+
+      3. Select a workspace and start collaborating.
+
+      Notes:
+
+      - Files the agent writes land in Files -> App Documents -> DeepSeek Harness
+        -> default-workspace by default, and stay there across restarts, updates
+        and reinstalls.
+      - Workspace files, sessions and model settings are all stored where they
+        survive a restart, an update or a reinstall.
+      - On a brand-new install the app waits for the netdisk documents mount
+        before starting, so the workspace is never created in a temporary place.
+permissions:
+  required:
+    - net.internet
+    - document.private

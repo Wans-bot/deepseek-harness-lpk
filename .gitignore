@@ -1,0 +1,12 @@
+# 构建产物
+dist/
+*.lpk
+node_modules/
+
+# 本机验收产物（截图/日志，含内部环境信息）
+verify/
+acceptance/
+
+# 杂项
+.DS_Store
+*.log
