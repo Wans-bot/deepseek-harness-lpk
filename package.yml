@@ -17,6 +17,12 @@ locales:
       2. 在 Settings → Models 中填入 DeepSeek API Key（或其他兼容模型的 Key）并保存
       3. 选择工作目录后即可与 Agent 对话、执行任务
 
+      官方账号登录：
+      - 也可以在 Settings → Account 用 DeepSeek 官方账号登录，不需要 API Key
+      - 授权后浏览器会跳到本机地址并显示打不开，此时把地址栏 URL 里的
+        http://127.0.0.1:3081 换成当前应用域名，其余部分原样保留，回车即可完成登录
+      - 登录一次即长期有效（账号 token 无过期时间），重启、升级都不会掉
+
       内置插件市场：
       - 已预装 dshmarket 插件市场，进入 Settings → Plugin Market 即可浏览和安装插件
       - 插件市场缩略图通过应用内代理加载，无需额外网络配置
@@ -26,7 +32,7 @@ locales:
       - 工作区文件、会话与模型设置都保存在可持久化的位置，重启、升级、重装都不会丢失
       - 首次打开无需手动建工作区，会自动创建默认工作区
       - 若应用刚安装时网盘文稿还没挂载，会先等待挂载再启动，不会把工作区写到临时位置
-      - 模型 Key 在应用内配置
+       - 模型 Key 在应用内配置
   en-US:
     name: DeepSeek Harness
     description: >-
@@ -43,6 +49,16 @@ locales:
       2. In Settings -> Models, enter your DeepSeek API Key.
 
       3. Select a workspace and start collaborating.
+
+      Official account sign-in:
+
+      - You can also sign in with a DeepSeek account under Settings -> Account,
+        no API key needed.
+      - After authorising, the browser is sent to a localhost address that will
+        fail to load. Copy that URL from the address bar, replace
+        http://127.0.0.1:3081 with this app's domain, and press Enter.
+      - The token never expires, so signing in once is enough across restarts
+        and updates.
 
       Notes:
 
