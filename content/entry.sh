@@ -283,6 +283,12 @@ run_patch /lzcapp/pkg/content/patch-dsh-settings.js
 # not reachable from here, so point the previews at the app's own proxy. Runs
 # after the market reconcile above, and is idempotent.
 run_patch /lzcapp/pkg/content/patch-dsh-market-images.js
+# Sign-in: DSH asks for a loopback OAuth callback origin, but this app is served
+# on a box sub-domain, so the click used to die locally with a closed popup.
+# Pinning the web callbackOrigin to the container's own loopback port satisfies
+# the platform; the final redirect is carried back by hand through the proxy.
+# Desktop sign-in is untouched. Idempotent, and optional on layout changes.
+run_patch /lzcapp/pkg/content/patch-dsh-login-origin.js
 
 # --- 4. run -----------------------------------------------------------------
 exec /entry.sh
